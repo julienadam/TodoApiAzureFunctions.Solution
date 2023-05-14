@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Azure.Data.Tables;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -12,11 +14,13 @@ public static class DeleteTodo
     [FunctionName("DeleteTodo")]
     public static async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos")] HttpRequest req,
+        [Table("Todos")] TableClient client,
         ILogger log)
     {
         log.LogInformation("Deleting all todos");
 
-        // Enrich object with Id and save
-        return new OkObjectResult(new Todo[] {});
+        await client.DeleteAsync();
+
+        return new OkObjectResult(Array.Empty<Todo>());
     }
 }

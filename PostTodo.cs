@@ -22,11 +22,11 @@ namespace TodoApiAzureFunctions
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation("Posting todo.\n" + requestBody);
             var postedTodo = JsonConvert.DeserializeObject<Todo>(requestBody);
+            postedTodo.Id = Guid.NewGuid().ToString();
 
             // Enrich object with Id and save
-            var result = postedTodo with { Id = Guid.NewGuid().ToString() };
-            await toDoItems.AddAsync(result);
-            return new JsonResult(result);
+            await toDoItems.AddAsync(postedTodo);
+            return new JsonResult(postedTodo);
         }
     }
 }

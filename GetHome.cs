@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Azure.Data.Tables;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -11,11 +14,14 @@ namespace TodoApiAzureFunctions
     {
         [FunctionName("GetHome")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos")] HttpRequest req, 
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos")] HttpRequest req,
+            [Table("Todos")] TableClient client,
             ILogger log)
         {
             log.LogInformation("Get on main page");
-            return new OkObjectResult(new Todo[] {});
+
+            var pages = client.Query<Todo>();
+            return new OkObjectResult(pages.ToList());
         }
     }
 }

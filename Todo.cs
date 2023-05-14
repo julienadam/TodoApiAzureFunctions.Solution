@@ -1,21 +1,36 @@
+using System;
 using System.Text.Json.Serialization;
+using Azure;
+using Azure.Data.Tables;
 
 namespace TodoApiAzureFunctions;
 
 /// <summary>
 /// Represents a Todo item
 /// </summary>
-public record Todo
+public class Todo : ITableEntity
 {
     [JsonIgnore]
-    public string PartitionKey { get; } = "Http";
+    string ITableEntity.PartitionKey { get; set; } = "Http";
 
-    [JsonIgnore] public string RowKey => Id;
+    [JsonIgnore] 
+    string ITableEntity.RowKey { get; set; }
+
+    [JsonIgnore]
+    ETag ITableEntity.ETag { get; set; }
+
+    [JsonIgnore]
+    DateTimeOffset? ITableEntity.Timestamp { get; set; }
 
     /// <summary>
     /// Id of the todo
     /// </summary>
-    public string Id { get; set; }
+    public string Id
+    {
+        get => ((ITableEntity) this).RowKey;
+        set => ((ITableEntity)this).RowKey = value;
+    }
+
     /// <summary>
     /// Position of the todo in the list
     /// </summary>
