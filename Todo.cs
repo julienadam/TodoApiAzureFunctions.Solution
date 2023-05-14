@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace TodoApiAzureFunctions;
 
 /// <summary>
@@ -5,9 +7,13 @@ namespace TodoApiAzureFunctions;
 /// </summary>
 public record Todo
 {
+    [JsonIgnore]
+    public string PartitionKey { get; } = "Http";
+
+    [JsonIgnore] public string RowKey => Id;
+
     /// <summary>
-    /// Id of the todo. Positive integer. Uniquely identifies the Todo item
-    /// in the system
+    /// Id of the todo
     /// </summary>
     public string Id { get; set; }
     /// <summary>
