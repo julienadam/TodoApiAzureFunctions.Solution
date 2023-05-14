@@ -15,7 +15,7 @@ namespace TodoApiAzureFunctions
             ILogger log)
         {
             log.LogInformation("Get on main page");
-            return new OkObjectResult("Foo");
+            return new OkObjectResult(new Todo[] {});
         }
     }
 }
